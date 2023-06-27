@@ -12,10 +12,20 @@ const UrlSchema = new mongoose.Schema({
     },
     urlCode: {
         type: String,
+        unique: true,
     },
     qrCode: {
         type: String,
     },
+    created_at: {
+        type: Date,
+        default: Date.now,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    }
 });
 
 module.exports = mongoose.model('Url', UrlSchema);
