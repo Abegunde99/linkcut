@@ -10,6 +10,10 @@ const UrlSchema = new mongoose.Schema({
             'Please add a valid url'
         ]
     },
+    slug: {
+        type: String,
+        unique: true,
+    },
     urlCode: {
         type: String,
         unique: true,

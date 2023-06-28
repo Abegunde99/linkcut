@@ -11,16 +11,16 @@ const ClicksSchema = new mongoose.Schema({
         default: 0,
     },
     devices: {
-        type: Object,
-        default: {},
+        type: [String],
+        default: [],
     },
     locations: {
-        type: Object,
-        default: {},
+        type: [String],
+        default: [],
     },
     sources: {
-        type: Object,
-        default: {},
+        type: [String],
+        default: [],
     },
     created_at: {
         type: Date,

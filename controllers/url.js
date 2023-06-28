@@ -7,11 +7,13 @@ const asyncHandler = require('../middlewares/async');
 
 
 //@desc     create a url
-//@route    POST /api/v1/urls
+//@route    POST /urls
 //@access   Private
 exports.createUrl = asyncHandler(async (req, res, next) => { 
     const { url } = req.body;
-    
+    const baseUrl = process.env.BASE_URL;
+    let urlCode;
+
     //check if url is valid
     if (!validUrl.isUri(url)) { 
         return next(new ErrorResponse('Invalid url', 400));
@@ -24,10 +26,16 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     }
 
     //check for urlCode and add default value if not present
-    if (!req.body.urlCode) { 
-        req.body.urlCode = nanoid(5);
+    if (!req.body.slug) { 
+        req.body.slug = nanoid(5);
     }
 
+    //check for baseUrl and add default value if not present
+    if (baseUrl) { 
+        urlCode = `${baseUrl}/${req.body.slug}`;
+    } else {
+        urlCode = `${req.protocol}://${req.get('host')}/${req.body.slug}`;
+    }
     //generate qrCode
     const qrCode = await QRCode.toDataURL(url);
     if(!qrCode) { 
@@ -37,7 +45,8 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     //create url
     const newUrl = await UrlModel.create({
         url,
-        urlCode: req.body.urlCode,
+        slug: req.body.slug,
+        urlCode,
         qrCode,
         user: req.user._id,
     });
@@ -56,10 +65,11 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
 
 
 //@desc     update a url
-//@route    PUT /api/v1/urls/:id
+//@route    PUT /urls/:id
 //@access   Private
 exports.updateUrl = asyncHandler(async (req, res, next) => { 
     const { id } = req.params;
+    const baseUrl = process.env.BASE_URL;
 
     //check for existing url
     const originalUrl = await UrlModel.findOne({ id });
@@ -72,18 +82,32 @@ exports.updateUrl = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('You are not authorized to update this url', 401));
     }
 
-    const { url, urlCode } = req.body;
+    let { url, slug } = req.body;
 
     //check if url is valid
     if (!validUrl.isUri(url)) {
         return next(new ErrorResponse('Invalid url', 400));
     }
 
-    //generate qrCode
-    const qrCode = await QRCode.toDataURL(url);
+    if (slug !== originalUrl.slug)  { 
+        if(baseUrl) { 
+            urlCode = `${baseUrl}/${slug}`;
+        }else {
+            urlCode = `${req.protocol}://${req.get('host')}/${slug}`;
+        }
+    }
 
-    const newUrl = await UrlModel.findByIdAndUpdate(id, { url, urlCode, qrCode }, { new: true, runValidators: true });
-    
+    let newUrl;
+
+    //generate qrCode only if the url is changed
+    if (url !== originalUrl.url) {
+        const qrCode = await QRCode.toDataURL(url);
+
+        newUrl = await UrlModel.findByIdAndUpdate(id, { url, slug, urlCode, qrCode }, { new: true, runValidators: true });
+    } else {
+        newUrl = await UrlModel.findByIdAndUpdate(id, { url, slug, urlCode }, { new: true, runValidators: true });
+    }
+
     res.status(200).json({
         success: true,
         newUrl,
@@ -94,7 +118,7 @@ exports.updateUrl = asyncHandler(async (req, res, next) => {
 
 
 //@desc     Delete a url
-//@route    DELETE /api/v1/urls/:id
+//@route    DELETE /urls/:id
 //@access   Private
 exports.deleteUrl = asyncHandler(async (req, res, next) => { 
     const { id } = req.params;
@@ -119,7 +143,7 @@ exports.deleteUrl = asyncHandler(async (req, res, next) => {
 
 
 //@desc     Get a url
-//@route    GET /api/v1/urls/:id
+//@route    GET /urls/:id
 //@access   Private
 exports.getUrl = asyncHandler(async (req, res, next) => { 
     const { id } = req.params;
@@ -137,7 +161,7 @@ exports.getUrl = asyncHandler(async (req, res, next) => {
 
 
 //@desc     Get all urls for a user
-//@route    GET /api/v1/urls
+//@route    GET /urls
 //@access   Private
 exports.getUrls = asyncHandler(async (req, res, next) => { 
     const urls = await UrlModel.find({ user: req.user._id });

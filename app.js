@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 
 const userRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
+const clicksRouter = require('./routes/clicks');
+const urlRouter = require('./routes/url');
 
 
 const app = express();
@@ -43,9 +45,10 @@ app.use(cors({
 
 //routes
 
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/auth', authRouter);
-
+app.use('/users', userRouter);
+app.use('/auth', authRouter);
+app.use('/', clicksRouter);
+app.use('/urls', urlRouter)
 
 //error handler
 const { errorHandler } = require('./middlewares/error');
