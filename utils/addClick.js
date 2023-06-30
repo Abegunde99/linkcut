@@ -4,12 +4,32 @@ const useragent = require('useragent');
 
 
 const addClicks = async (model, req, urlId) => { 
-    const { referer, 'user-agent': userAgent } = req.headers;
+    const { 'user-agent': userAgent } = req.headers;
     const ipAddress = req.ip;
+    const referrer = req.headers.referer || req.headers.referrer;
+
+    let referer;
+    if (referrer) {
+        referer = new URL(referrer).hostname;
+    } else {
+        referer = 'Unknown';
+    }
    
+    let source;
+    if (referer.includes('whatsapp')) {
+        source = 'whatsapp';
+    } else if (referer.includes('facebook')) {
+        source = 'facebook';
+    } else if (referer.includes('twitter')) {
+        source = 'twitter';
+    } else if (referer.includes('instagram')) {
+        source = 'instagram';
+    } else {
+        source = 'others';
+    }
     // Use geoip-lite to get location information based on IP address
     const geo = geoip.lookup(ipAddress);
-    console.log(geo)
+    
     const state = geo ? geo.region : 'Unknown';
     const country = geo ? geo.country : 'Unknown';
 
@@ -31,8 +51,7 @@ const addClicks = async (model, req, urlId) => {
     } else {
         device = 'Others';
     }
-    // Get source information from referer
-    const source = referer;
+    
 
     const location = `${state}, ${country}`;
     
