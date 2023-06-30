@@ -5,9 +5,10 @@ const useragent = require('useragent');
 
 const addClicks = async (model, req, urlId) => { 
     const { 'user-agent': userAgent } = req.headers;
+    console.log(req.headers)
     const ipAddress = req.ip;
     const referrer = req.headers.referer || req.headers.referrer;
-
+    // console.log(referrer)
     let referer;
     if (referrer) {
         referer = new URL(referrer).hostname;
@@ -15,6 +16,7 @@ const addClicks = async (model, req, urlId) => {
         referer = 'Unknown';
     }
    
+    // console.log(referer)
     let source;
     if (referer.includes('whatsapp')) {
         source = 'whatsapp';
@@ -29,7 +31,7 @@ const addClicks = async (model, req, urlId) => {
     }
     // Use geoip-lite to get location information based on IP address
     const geo = geoip.lookup(ipAddress);
-    
+
     const state = geo ? geo.region : 'Unknown';
     const country = geo ? geo.country : 'Unknown';
 
