@@ -5,8 +5,8 @@ const useragent = require('useragent');
 
 const addClicks = async (model, req, urlId) => { 
     const { 'user-agent': userAgent } = req.headers;
-    console.log(req.headers)
-    const ipAddress = req.ip;
+    console.log(req)
+    const {'true-client-ip': ipAddress} = req.headers;
     const referrer = req.headers.referer || req.headers.referrer;
     // console.log(referrer)
     let referer;
