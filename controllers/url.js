@@ -128,6 +128,9 @@ exports.deleteUrl = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Url does not exist', 400));
     }
 
+    if (!req.user) { 
+        return next(new ErrorResponse('you\'re not logged in', 401));
+    }
     //check if user is the owner of the url
     if (url.user.toString() !== req.user._id.toString()) {
         return next(new ErrorResponse('You are not authorized to delete this url', 401));

@@ -28,6 +28,7 @@
     "nodemailer": "^6.9.3",
     "qrcode": "^1.5.3",
     "supertest": "^6.3.3",
+    "useragent": "^2.3.0",
     "valid-url": "^1.0.9",
     "xss-clean": "^0.1.4"
   }
