@@ -48,7 +48,7 @@ app.use(cors({
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/', clicksRouter);
-app.use('/urls', urlRouter)
+app.use('/', urlRouter)
 
 //error handler
 const { errorHandler } = require('./middlewares/error');

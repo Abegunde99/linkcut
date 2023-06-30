@@ -2,7 +2,7 @@ const { UrlModel, ClicksModel } = require('../models');
 const { nanoid } = require('nanoid');
 const QRCode = require('qrcode');
 const validUrl = require('valid-url');
-const { ErrorResponse } = require('../utils/response');
+const { ErrorResponse } = require('../utils/errorResponse');
 const asyncHandler = require('../middlewares/async');
 
 
@@ -72,7 +72,7 @@ exports.updateUrl = asyncHandler(async (req, res, next) => {
     const baseUrl = process.env.BASE_URL;
 
     //check for existing url
-    const originalUrl = await UrlModel.findOne({ id });
+    const originalUrl = await UrlModel.findOne({ _id: id });
     if (!originalUrl) {
         return next(new ErrorResponse('Url does not exist', 400));
     }
@@ -133,7 +133,11 @@ exports.deleteUrl = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('You are not authorized to delete this url', 401));
     }
 
-    await url.remove();
+    //delete url
+    await UrlModel.findByIdAndDelete(id);
+
+    //delete clicks
+    await ClicksModel.findOneAndDelete({ urlId: id });
 
     res.status(200).json({
         success: true,
@@ -161,7 +165,7 @@ exports.getUrl = asyncHandler(async (req, res, next) => {
 
 
 //@desc     Get all urls for a user
-//@route    GET /urls
+//@route    GET /url/user
 //@access   Private
 exports.getUrls = asyncHandler(async (req, res, next) => { 
     const urls = await UrlModel.find({ user: req.user._id });

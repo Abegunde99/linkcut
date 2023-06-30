@@ -21,7 +21,7 @@ afterAll(async () => {
 describe('User Endpoints', () => { 
     it('should create a new user', async () => {
         const res = await request(app)
-            .post('/api/v1/auth/register')
+            .post('/auth/register')
             .send(userOne)
             .expect(200);
         expect(res.body).toHaveProperty('success');
@@ -30,7 +30,7 @@ describe('User Endpoints', () => {
 
     it('should login a user', async () => {
         const res = await request(app)
-            .post('/api/v1/auth/login')
+            .post('/auth/login')
             .send({
                 email: userOne.email,
                 password: userOne.password
@@ -42,7 +42,7 @@ describe('User Endpoints', () => {
 
     it('should not login a user with wrong credentials', async () => {
         const res = await request(app)
-            .post('/api/v1/auth/login')
+            .post('/auth/login')
             .send({
                 email: userOne.email,
                 password: 'wrongpassword'
@@ -53,7 +53,7 @@ describe('User Endpoints', () => {
 
     it('should logout a user', async () => { 
         const res = await request(app)
-            .get('/api/v1/auth/logout')
+            .get('/auth/logout')
             .expect(200);
         expect(res.body).toHaveProperty('success');
     });
@@ -67,7 +67,7 @@ describe('User Endpoints', () => {
         });
         await user.save();
         const res = await request(app)
-            .put(`/api/v1/users/${user._id}`)
+            .put(`/users/${user._id}`)
             .send({
                 firstName: 'joshua',
                 lastName: 'Olanrewaju',
@@ -87,7 +87,7 @@ describe('User Endpoints', () => {
         });
         await user.save();
         const res = await request(app)
-            .delete(`/api/v1/users/${user._id}`)
+            .delete(`/users/${user._id}`)
             .expect(200);
         expect(res.body).toHaveProperty('success');
     });

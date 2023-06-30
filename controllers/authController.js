@@ -53,6 +53,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @desc      Log user out / clear cookie
 // @route     GET /auth/logout
 exports.logout = asyncHandler(async (req, res, next) => {
+ 
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
@@ -66,7 +67,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 
 
 // @desc      Get current logged in user
-// @route     GET /auth/me
+// @route     GET /auth/profile
 exports.getMe = asyncHandler(async (req, res, next) => {
   //check for req.user
   if (!req.user) {

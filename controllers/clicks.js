@@ -1,5 +1,5 @@
 const {ClicksModel, UrlModel} = require('../models');
-const { ErrorResponse } = require('../utils/response');
+const { ErrorResponse } = require('../utils/errorResponse');
 const asyncHandler = require('../middlewares/async');
 const geoip = require('geoip-lite');
 const addClicks = require('../utils/addClick');
@@ -34,16 +34,13 @@ const getClicksByUrlId = asyncHandler(async (req, res, next) => {
 //@access   Public
 const clickUrl = asyncHandler(async (req, res, next) => { 
     const { urlCode } = req.params;
-    const url = await UrlModel.findOne({ urlCode });
+    const url = await UrlModel.findOne({ slug: urlCode });
     if (!url) {
         return next(new ErrorResponse('Url not found', 404));
     }
     const clicks = await addClicks(ClicksModel, req, url._id);
 
-    res.status(200).json({
-        success: true,
-        url,
-    });
+    res.redirect(url.url);
 });
 
 module.exports = {
