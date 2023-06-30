@@ -5,7 +5,7 @@ const useragent = require('useragent');
 
 const addClicks = async (model, req, urlId) => { 
     const { 'user-agent': userAgent } = req.headers;
-    console.log(req)
+    // console.log(req)
     const {'true-client-ip': ipAddress} = req.headers;
     const referrer = req.headers.referer || req.headers.referrer;
     // console.log(referrer)
@@ -32,8 +32,15 @@ const addClicks = async (model, req, urlId) => {
     // Use geoip-lite to get location information based on IP address
     const geo = geoip.lookup(ipAddress);
 
-    const state = geo ? geo.region : 'Unknown';
-    const country = geo ? geo.country : 'Unknown';
+    let state = geo ? geo.region : 'Unknown';
+    let country = geo ? geo.country : 'Unknown';
+
+    //check if the state and country is known
+    if (state === '') {
+        state = 'Unknown';
+    }
+    if (country === 'NG' && state === 'Unknown') state = 'Lagos', country = 'Nigeria';
+   
 
     // Get device information from user agent string
     const agent = useragent.parse(userAgent);
