@@ -11,73 +11,87 @@ const urlOne = {
 const userOne = {
     firstName: 'John',
     lastName: 'Doe',
-    email: 'johnDoe@gmail.com',
+    email: 'preciousolanrewajuw@gmail.com',
     password: '123456'
 };
 
-beforeAll(async () => {
-    await connectDB();
-
-    //register user and login user
-    const user = await UserModel.create(userOne);
-    const res = await request(app)
-    .post('/auth/login')
-    .send({
-        email: userOne.email,
-        password: userOne.password
-    });
-});
-
-afterAll(async () => { 
-    await UserModel.deleteMany();
-    await UrlModel.deleteMany();
-    await ClicksModel.deleteMany();
-});
-
-
 describe('Url Endpoints', () => {
+    
+    beforeAll(async () => {
+        await connectDB();
+    });
+
+    let newToken;
+    let newUrlId;
+    beforeAll(async () => { 
+        //register user and login user
+        await request(app)
+            .post('/auth/register')
+            .send(userOne);
+        const user = await request(app)
+            .post('/auth/login')
+            .send({
+                email: userOne.email,
+                password: userOne.password
+            });
+        newToken = user.body.token;
+    });
+
+    afterAll(async () => { 
+        await UserModel.deleteMany();
+        await UrlModel.deleteMany();
+        await ClicksModel.deleteMany();
+    });
+
     it('should create a new url', async () => { 
         const res = await request(app)
             .post('/urls')
+            .set('cookie', [`token=${newToken}`])
             .send(urlOne)
             .expect(200);
         expect(res.body).toHaveProperty('success');
-        expect(res.body).toHaveProperty('data');
+        expect(res.body).toHaveProperty('newUrl');
+        newUrlId = res.body.newUrl._id;
     });
 
     it('should get all urls', async () => { 
         const res = await request(app)
-            .get('/urls')
+            .get('/url/user')
+            .set('cookie', [`token=${newToken}`])
             .expect(200);
         expect(res.body).toHaveProperty('success');
-        expect(res.body).toHaveProperty('data');
+        expect(res.body).toHaveProperty('urls');
     });
 
-    it('update a url', async () => { 
-        const url = await UrlModel.create({
-            url: 'https://www.github.com',
-            slug: 'github'
-        });
+    it('update a url', async () => {   
         const res = await request(app)
-            .put(`/urls/${url._id}`)
+            .put(`/urls/${newUrlId}`)
+            .set('cookie', [`token=${newToken}`])
             .send({
                 url: 'https://www.facebook.com',
                 slug: 'facebook'
             })
             .expect(200);
         expect(res.body).toHaveProperty('success');
-        expect(res.body).toHaveProperty('data');
+        expect(res.body).toHaveProperty('newUrl');
     });
 
     it('should delete a url', async () => { 
-        const url = await UrlModel.create({
-            url: 'https://www.github.com',
-            slug: 'github'
-        });
+        //create url
+        const url = await request(app)
+            .post('/urls')
+            .set('cookie', [`token=${newToken}`])
+            .send({
+                url: 'https://www.instagram.com',
+                slug: 'instagram'
+            });
+        
+        //delete url
         const res = await request(app)
-            .delete(`/urls/${url._id}`)
+            .delete(`/urls/${url.body.newUrl._id}`)
+            .set('cookie', [`token=${newToken}`])
             .expect(200);
         expect(res.body).toHaveProperty('success');
-        expect(res.body).toHaveProperty('data');
+        expect(res.body).toHaveProperty('message');
     });
 });
