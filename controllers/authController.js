@@ -190,7 +190,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
   //check if password and confirm password are same
   if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorResponse('Password and confirm password do not match', 400));
+    return next(new ErrorResponse('Passwords do not match', 400));
   }
 
   //get email from params
