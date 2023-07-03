@@ -168,7 +168,7 @@ exports.verifyOtp = asyncHandler(async (req, res, next) => {
     otpExpire: { $gt: Date.now() }
   });
   if (!user) {
-    return next(new ErrorResponse('Invalid token', 400));
+    return next(new ErrorResponse('Enter a valid Otp', 400));
   }
 
   user.otpHash = undefined;
