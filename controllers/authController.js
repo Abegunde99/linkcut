@@ -111,7 +111,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await UserModel.findOne({ email: req.body.email });
   if (!user) {
-    return next(new ErrorResponse('There is no user with that email', 404));
+    return next(new ErrorResponse('Email is not registered', 404));
   }
 
   //generate otp
