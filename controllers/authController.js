@@ -152,18 +152,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 
 // @desc      Reset password
-// @route     PUT auth/resetpassword
-exports.resetPassword = asyncHandler(async (req, res, next) => {
-  //check for password and confirm password
-  if (!req.body.password || !req.body.confirmPassword) {
-    return next(new ErrorResponse('Please provide password and confirm password', 400));
-  }
-
-  //check if password and confirm password are same
-  if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorResponse('Password and confirm password do not match', 400));
-  }
-
+// @route     POST auth/verifyotp
+exports.verifyOtp = asyncHandler(async (req, res, next) => {
   //check if otp is valid
   if (!req.body.otp) {
     return next(new ErrorResponse('Please provide otp', 400));
@@ -181,12 +171,47 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid token', 400));
   }
 
-  // Set new password
-  user.password = req.body.password;
   user.otpHash = undefined;
   user.otpExpire = undefined;
+  user.isVerified = true;
   await user.save();
     
+  res.status(200).json({ success: true, data: 'Otp verified' });
+});
+
+
+//@desc     Reset password
+//@route    PUT auth/resetpassword/?email=email
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  //check for password and confirm password
+  if (!req.body.password || !req.body.confirmPassword) {
+    return next(new ErrorResponse('Please provide password and confirm password', 400));
+  }
+
+  //check if password and confirm password are same
+  if (req.body.password !== req.body.confirmPassword) {
+    return next(new ErrorResponse('Password and confirm password do not match', 400));
+  }
+
+  //get email from params
+  const email = req.query.email;
+
+  //get user by email
+  const user = await UserModel.findOne({ email }).select('+password');
+  if (!user) {
+    return next(new ErrorResponse('Invalid email', 400));
+  }
+
+  //check if otp is verified
+  if (!user.isVerified) {
+    return next(new ErrorResponse('Please verify otp', 400));
+  }
+
+  //change password
+  user.password = req.body.password;
+  user.isVerified = undefined;
+  await user.save();
+
   //send email to user
   const message = `Your password has been changed successfully`;
 
@@ -206,7 +231,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   const token = createToken(user._id);
   sendTokenResponse(token, 200, res);
 });
-
 
 // Get token from model, create cookie and send response
 const sendTokenResponse = (token, statusCode, res) => {
