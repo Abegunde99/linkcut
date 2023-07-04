@@ -43,8 +43,22 @@ const clickUrl = asyncHandler(async (req, res, next) => {
     res.redirect(url.url);
 });
 
+
+//@desc    get all clicks by a user
+//@route    GET /user/clicks
+//@access   Private
+const getUserClicks = asyncHandler(async (req, res, next) => { 
+    const clicks = await ClicksModel.find({user: req.user._id}).populate('urlId');
+   
+    res.status(200).json({
+        success: true,
+        data: clicks,
+    });
+});
+
 module.exports = {
     getClicks,
     getClicksByUrlId,
     clickUrl,
+    getUserClicks,
 }

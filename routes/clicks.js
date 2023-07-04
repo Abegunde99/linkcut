@@ -12,4 +12,6 @@ router.route('/clicks/:urlId')
 router.route('/:urlCode')
     .get(clickUrl);
 
+router.route('/user/clicks')
+    .get(protect, getClicks);
 module.exports = router;
