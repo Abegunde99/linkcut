@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middlewares/auth');
-const { getClicks, getClicksByUrlId, clickUrl } = require('../controllers/clicks');
+const { getClicks, getClicksByUrlId, clickUrl , getUserClicks} = require('../controllers/clicks');
 
 router.route('/clicks')
     .get(protect, getClicks);
@@ -13,5 +13,5 @@ router.route('/:urlCode')
     .get(clickUrl);
 
 router.route('/user/clicks')
-    .get(protect, getClicks);
+    .get(protect, getUserClicks);
 module.exports = router;
