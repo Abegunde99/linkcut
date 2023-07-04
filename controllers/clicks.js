@@ -44,16 +44,20 @@ const clickUrl = asyncHandler(async (req, res, next) => {
 });
 
 
-//@desc    get all clicks by a user
+//@desc    get all clicks by a user where user is inside urlId
 //@route    GET /user/clicks
 //@access   Private
 const getUserClicks = asyncHandler(async (req, res, next) => { 
-    const clicks = await ClicksModel.find({user: req.user._id}).populate('urlId');
-   
+    const clicks = await ClicksModel.find({}).populate(urlId);
+
+
+    const userClicks = clicks.filter((click) => click.urlId.user == req.user._id);
+
     res.status(200).json({
         success: true,
-        data: clicks,
+        data: userClicks,
     });
+
 });
 
 module.exports = {
