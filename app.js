@@ -49,7 +49,7 @@ app.use('/', urlRouter)
 
 //error handler
 const { errorHandler } = require('./middlewares/error');
-app.use(errorHandler);
+// app.use(errorHandler);
 
 
 module.exports = app;

@@ -48,11 +48,16 @@ const clickUrl = asyncHandler(async (req, res, next) => {
 //@route    GET /user/clicks
 //@access   Private
 const getUserClicks = asyncHandler(async (req, res, next) => { 
-    const clicks = await ClicksModel.find({}).populate(urlId);
+    const clicks = await ClicksModel.find({}).populate('urlId');
 
-
-    const userClicks = clicks.filter((click) => click.urlId.user == req.user._id);
-
+   
+    // get clicks where req.user._id is equal to clicks.urlId.user
+    const userClicks = [];
+    for (let i = 0; i < clicks.length; i++) { 
+        if (clicks[i].urlId.user == req.user._id.toString()) { 
+            userClicks.push(clicks[i]);
+        }
+    }
     res.status(200).json({
         success: true,
         data: userClicks,
