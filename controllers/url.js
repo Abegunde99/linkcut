@@ -14,10 +14,10 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     const baseUrl = process.env.BASE_URL;
     let urlCode;
 
-    //check if url is valid
-    if (!validUrl.isUri(url)) { 
-        return next(new ErrorResponse('Invalid url', 400));
-    }
+    // //check if url is valid
+    // if (!validUrl.isUri(url)) { 
+    //     return next(new ErrorResponse('Invalid url', 400));
+    // }
 
     //check for existing url
     const urlExists = await UrlModel.findOne({ url });
