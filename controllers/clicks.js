@@ -62,10 +62,23 @@ const getUserClicks = asyncHandler(async (req, res, next) => {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const userClicks = userClick.slice(startIndex, endIndex);
+
+    const total = userClick.length;
+  
+    // Pagination result
+    const pagination = {};
+  
+    if (endIndex < total) {
+        pagination.next = { page: page + 1} 
+    }
+  
+    if (startIndex > 0) {
+        pagination.prev = { page: page - 1}
+    }
            
     res.status(200).json({
         success: true,
-        data: {userClicks, page, limit, total: userClick.length},
+        data: {userClicks, pagination, limit, total},
     });
 
 });
