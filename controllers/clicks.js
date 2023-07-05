@@ -50,17 +50,22 @@ const clickUrl = asyncHandler(async (req, res, next) => {
 const getUserClicks = asyncHandler(async (req, res, next) => { 
     const clicks = await ClicksModel.find({}).populate('urlId');
 
-   
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 2;
     // get clicks where req.user._id is equal to clicks.urlId.user
-    const userClicks = [];
+    const userClick = [];
     for (let i = 0; i < clicks.length; i++) { 
         if (clicks[i].urlId.user == req.user._id.toString()) { 
-            userClicks.push(clicks[i]);
+            userClick.push(clicks[i]);
         }
     }
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const userClicks = userClick.slice(startIndex, endIndex);
+           
     res.status(200).json({
         success: true,
-        data: userClicks,
+        data: {userClicks, page, limit, total: userClick.length},
     });
 
 });
