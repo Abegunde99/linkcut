@@ -97,6 +97,11 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('New password cannot be same as old password', 401));
   }
 
+  //check if confirm password is same as new password
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(new ErrorResponse('Confirm password does not match new password', 401));
+  }
+  
   user.password = req.body.newPassword;
   await user.save();
 
