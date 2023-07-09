@@ -57,17 +57,15 @@ app.use(cors());
 app.get('/', (req, res) => {
     // Check if a temporary user ID is already stored in the session
     if (!req.session.tempUserId) {
-      // Generate a temporary user ID using shortid package
-      req.session.tempUserId = new ObjectId().toString();
+        // Generate a temporary user ID using shortid package
+        req.session.tempUserId = new ObjectId().toString();
     }
 
-    res.send('Welcome to the landing page!'); // Your landing page HTML here
+    res.status(200).json({
+       message : 'Welcome to the landing page!'});
 });
 
-app.get('/dashboard', (req, res) => { 
-    console.log(req.session.tempUserId)
-    res.send('Welcome to the dashboard!'); // Your dashboard HTML here
-});
+
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/', clicksRouter);
