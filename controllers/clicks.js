@@ -83,9 +83,18 @@ const getUserClicks = asyncHandler(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     // get clicks where req.user._id is equal to clicks.urlId.user
     const userClick = [];
-    for (let i = 0; i < clicks.length; i++) { 
-        if (clicks[i].urlId.user == req.user.sessionId) { 
-            userClick.push(clicks[i]);
+    if (!req.user) {
+        for (let i = 0; i < clicks.length; i++) {
+            if (clicks[i].urlId.user == req.session.tempUserId) {
+                userClick.push(clicks[i]);
+            }
+        }
+    } else {
+        
+        for (let i = 0; i < clicks.length; i++) {
+            if (clicks[i].urlId.user == req.user.sessionId) {
+                userClick.push(clicks[i]);
+            }
         }
     }
     const startIndex = (page - 1) * limit;
