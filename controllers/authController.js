@@ -4,6 +4,8 @@ const asyncHandler = require('../middlewares/async');
 const sendEmail = require('../utils/sendEmail');
 const { UserModel } = require('../models');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 // @desc      Register user
 // @route     POST /auth/register

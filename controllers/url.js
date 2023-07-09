@@ -4,6 +4,8 @@ const QRCode = require('qrcode');
 const validUrl = require('valid-url');
 const { ErrorResponse } = require('../utils/errorResponse');
 const asyncHandler = require('../middlewares/async');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 
 //@desc     create a url
