@@ -48,7 +48,7 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
         slug: req.body.slug,
         urlCode,
         qrCode,
-        user: req.user._id,
+        user: req.session.tempUserId,
     });
 
     //create clicks

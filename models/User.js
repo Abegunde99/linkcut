@@ -28,6 +28,9 @@ const UserSchema = new mongoose.Schema({
         minlength: 6,
         select: false
     },
+    sessionId: {
+        type: String,
+    },
    
     otpExpire: Date,
     otpHash: String,

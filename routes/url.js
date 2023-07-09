@@ -4,7 +4,7 @@ const { protect } = require('../middlewares/auth');
 const { createUrl, getUrls, getUrl, updateUrl, deleteUrl } = require('../controllers/url');
 
 router.route('/urls')
-    .post(protect, createUrl)
+    .post(createUrl)
     
 
 router.route('/urls/:id')

@@ -10,8 +10,15 @@ const jwt = require('jsonwebtoken');
 exports.register = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
+  if (!req.session.tempUserId) {
+    // Generate a temporary user ID using shortid package
+    req.session.tempUserId = new ObjectId().toString();
+  }
+
+  const sessionId = req.session.tempUserId;
+
   // Create user
-  const user = await UserModel.create({ firstName, lastName, email, password });
+  const user = await UserModel.create({ firstName, lastName, email, password, sessionId });
 
    //generate token
    const token = createToken(user._id);
@@ -23,7 +30,6 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @route     POST /auth/login
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
   // Validate emil & password
   if (!email || !password) {
     return next(new ErrorResponse('Please provide an email and password', 400));
@@ -53,7 +59,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @desc      Log user out / clear cookie
 // @route     GET /auth/logout
 exports.logout = asyncHandler(async (req, res, next) => {
- 
+
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
