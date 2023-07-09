@@ -13,5 +13,5 @@ router.route('/urls/:id')
     .delete(protect, deleteUrl);
 
 router.route('/url/user')
-    .get(protect, getUrls);
+    .get( getUrls);
 module.exports = router;

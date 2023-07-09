@@ -179,7 +179,7 @@ exports.getUrl = asyncHandler(async (req, res, next) => {
 //@route    GET /url/user
 //@access   Private
 exports.getUrls = asyncHandler(async (req, res, next) => { 
-    const urls = await UrlModel.find({ user: req.user._id });
+    const urls = await UrlModel.find({ user: req.session.tempUserId });
 
     res.status(200).json({
         success: true,
