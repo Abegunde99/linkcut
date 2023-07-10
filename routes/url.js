@@ -4,7 +4,7 @@ const { protect } = require('../middlewares/auth');
 const { createUrl, getUrls, getUrl, updateUrl, deleteUrl } = require('../controllers/url');
 
 router.route('/urls')
-    .post(createUrl)
+    .post(protect, createUrl)
     
 
 router.route('/urls/:id')
@@ -13,5 +13,5 @@ router.route('/urls/:id')
     .delete(protect, deleteUrl);
 
 router.route('/url/user')
-    .get( getUrls);
+    .get(protect, getUrls);
 module.exports = router;

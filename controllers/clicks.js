@@ -84,21 +84,19 @@ const getUserClicks = asyncHandler(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     // get clicks where req.user._id is equal to clicks.urlId.user
     const userClick = [];
-    // console.log(req.session.tempUserId)
-    if (!req.user) {
+    // if (!req.user) {
+    //     for (let i = 0; i < clicks.length; i++) {
+    //         if (clicks[i].urlId.user == sessionId) {
+    //             userClick.push(clicks[i]);
+    //         }
+    //     }
+    // } else {
         for (let i = 0; i < clicks.length; i++) {
-            if (clicks[i].urlId.user == sessionId) {
+            if (clicks[i].urlId.user == req.user._id.toString() ) {
                 userClick.push(clicks[i]);
             }
         }
-    } else {
-        // console.log(req.user.sessionId)
-        for (let i = 0; i < clicks.length; i++) {
-            if (clicks[i].urlId.user == req.user.sessionId ) {
-                userClick.push(clicks[i]);
-            }
-        }
-    }
+    // }
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const userClicks = userClick.slice(startIndex, endIndex);
@@ -118,7 +116,7 @@ const getUserClicks = asyncHandler(async (req, res, next) => {
            
     res.status(200).json({
         success: true,
-        data: {userClicks, pagination, limit, total, sessionId},
+        data: {userClicks, pagination, limit, total},
     });
 
 });

@@ -40,3 +40,22 @@ exports.protect = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid token', 401));
   }
 });
+
+
+//check if user is logged in, and if they are not, create a temporary user ID and it on the request object
+exports.checkUser = asyncHandler(async (req, res, next) => { 
+  let token;
+  if (req.cookies.token) {
+    // Set token from cookie
+    token = req.cookies.token;
+  }
+  if (!token) {
+    if (!req.session.userId) {
+      // Generate a temporary user ID using shortid package
+      req.session.userId = 'TEMP-' + new Date().getTime().toString();
+    }
+    const sessionId = req.session.userId;
+    const user = await UserModel.findOne({ sessionId });
+    req.user = user;
+  }
+});

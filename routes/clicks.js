@@ -13,5 +13,5 @@ router.route('/:urlCode')
     .get(clickUrl);
 
 router.route('/user/clicks')
-    .get(getUserClicks);
+    .get(protect, getUserClicks);
 module.exports = router;

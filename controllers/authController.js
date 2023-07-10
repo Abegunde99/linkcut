@@ -12,25 +12,8 @@ const { ObjectId } = mongoose.Types;
 exports.register = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
-  
-  // let sessionId = req.cookies.sessionId;
-  // if (!sessionId) { 
-  //   sessionId = new ObjectId().toString();
-  //   res.cookie('sessionId', sessionId, {
-  //     secure: true, // Set to true if using HTTPS
-  //     httpOnly: true,
-  //     sameSite: 'strict', // Adjust based on your requirements
-  //     maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
-  //   });
-  // }
-// console.log(req.session.userId)
-  if (!req.session.userId) {
-    // Generate a temporary user ID using shortid package
-    req.session.userId = 'TEMP-' + new Date().getTime().toString();
-  }
-  const sessionId = req.session.userId;
   // Create user
-  const user = await UserModel.create({ firstName, lastName, email, password, sessionId });
+  const user = await UserModel.create({ firstName, lastName, email, password });
 
    //generate token
    const token = createToken(user._id);

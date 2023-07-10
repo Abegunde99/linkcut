@@ -16,10 +16,6 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     const baseUrl = process.env.BASE_URL;
     let urlCode;
 
-    // const sessionId = req.cookies.sessionId;
-    const sessionId = req.session.userId;
-    console.log(sessionId)
-    
     //check if url is valid
     if (!validUrl.isUri(url)) { 
         return next(new ErrorResponse('Invalid url', 400));
@@ -54,7 +50,7 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
         slug: req.body.slug,
         urlCode,
         qrCode,
-        user: sessionId,
+        user: req.user._id.toString(),
     });
 
     //create clicks
@@ -65,7 +61,6 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         newUrl,
-        sessionId,
     });
 
 });
@@ -178,7 +173,7 @@ exports.getUrl = asyncHandler(async (req, res, next) => {
 //@route    GET /url/user
 //@access   Private
 exports.getUrls = asyncHandler(async (req, res, next) => { 
-    const urls = await UrlModel.find({ user: req.session.tempUserId });
+    const urls = await UrlModel.find({ user: req.user_id });
 
     res.status(200).json({
         success: true,
