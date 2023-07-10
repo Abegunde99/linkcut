@@ -25,7 +25,7 @@ const app = express();
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     // cookie: {
     //     secure: true, // Set to true if using HTTPS
     //     httpOnly: true,
