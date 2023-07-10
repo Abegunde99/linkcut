@@ -180,3 +180,81 @@ exports.getUrls = asyncHandler(async (req, res, next) => {
         urls,
     });
 });
+
+
+//desc     create a url for an unregeistered user
+//@route    POST /urls/generate
+//@access   Public
+exports.generateUrl = asyncHandler(async (req, res, next) => { 
+    const { url } = req.body;
+    const baseUrl = process.env.BASE_URL;
+    let urlCode;
+
+    //check if url is valid
+    if (!validUrl.isUri(url)) { 
+        return next(new ErrorResponse('Invalid url', 400));
+    }
+
+    //check for existing url
+    const urlExists = await UrlModel.findOne({ url });
+    if (urlExists) {
+        return next(new ErrorResponse('Url already exists', 400));
+    }
+
+    //check for urlCode and add default value if not present
+    if (!req.body.slug) { 
+        req.body.slug = nanoid(5);
+    }
+
+    //check for baseUrl and add default value if not present
+    if (baseUrl) { 
+        urlCode = `${baseUrl}/${req.body.slug}`;
+    } else {
+        urlCode = `${req.protocol}://${req.get('host')}/${req.body.slug}`;
+    }
+    //generate qrCode
+    const qrCode = await QRCode.toDataURL(url);
+    if(!qrCode) { 
+        return next(new ErrorResponse('Error generating qrCode', 500));
+    }
+
+    //assign a temporary user id
+    req.body.user = new ObjectId().toString();
+
+    //create url
+    const newUrl = await UrlModel.create({
+        url,
+        slug: req.body.slug,
+        urlCode,
+        user: req.body.user,
+        qrCode,
+    });
+
+    //create clicks
+    await ClicksModel.create({
+        urlId: newUrl._id,  
+    });
+
+    res.status(200).json({
+        success: true,
+        newUrl,
+    });
+
+});
+
+//@desc get a url for an unregeistered user
+//@route    GET /url/:userId
+//@access   Public
+exports.getUrlForUnregisteredUser = asyncHandler(async (req, res, next) => { 
+    const { userId } = req.params;
+
+    const url = await UrlModel.findOne({ user: userId });
+    if (!url) {
+        return next(new ErrorResponse('Url does not exist', 400));
+    }
+
+    res.status(200).json({
+        success: true,
+        url,
+    });
+});
