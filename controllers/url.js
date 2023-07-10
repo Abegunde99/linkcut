@@ -33,7 +33,7 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
         urlCode = `${req.protocol}://${req.get('host')}/${req.body.slug}`;
     }
     //generate qrCode
-    const qrCode = await QRCode.toDataURL(url);
+    const qrCode = await QRCode.toDataURL(urlCode);
     if(!qrCode) { 
         return next(new ErrorResponse('Error generating qrCode', 500));
     }
@@ -202,7 +202,7 @@ exports.generateUrl = asyncHandler(async (req, res, next) => {
         urlCode = `${req.protocol}://${req.get('host')}/${req.body.slug}`;
     }
     //generate qrCode
-    const qrCode = await QRCode.toDataURL(url);
+    const qrCode = await QRCode.toDataURL(urlCode);
     if(!qrCode) { 
         return next(new ErrorResponse('Error generating qrCode', 500));
     }
