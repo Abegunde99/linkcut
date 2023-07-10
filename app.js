@@ -8,9 +8,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { cacheMiddleware } = require('./utils/redis');
 const session = require('express-session');
-const shortid = require('shortid');
-const mongoose = require('mongoose');
-const { ObjectId } = mongoose.Types;
+// const shortid = require('shortid');
+// const mongoose = require('mongoose');
+// const { ObjectId } = mongoose.Types;
 
 
 const userRouter = require('./routes/user');
@@ -22,16 +22,16 @@ const urlRouter = require('./routes/url');
 const app = express();
 
 // Initialize session middleware
-app.use(session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    // cookie: {
-    //     secure: true, // Set to true if using HTTPS
-    //     httpOnly: true,
-    //     sameSite: 'strict' // Adjust based on your requirements
-    //   }
-}));
+// app.use(session({
+//     secret: 'your-secret-key',
+//     resave: false,
+//     saveUninitialized: false,
+//     // cookie: {
+//     //     secure: true, // Set to true if using HTTPS
+//     //     httpOnly: true,
+//     //     sameSite: 'strict' // Adjust based on your requirements
+//     //   }
+// }));
   
 
 // Body parser
@@ -58,32 +58,32 @@ app.use(hpp());
 app.use(cors());
 
 
-//routes
-app.get('/', (req, res) => {
-    // Check if a temporary user ID is already stored in the session
-    if (!req.session.userId) {
-        // Generate a temporary user ID using shortid package
-        req.session.userId = 'TEMP-' + new Date().getTime().toString();
-    }
-    const sessionId = req.session.userId;
+// //routes
+// app.get('/', (req, res) => {
+//     // Check if a temporary user ID is already stored in the session
+//     if (!req.session.userId) {
+//         // Generate a temporary user ID using shortid package
+//         req.session.userId = 'TEMP-' + new Date().getTime().toString();
+//     }
+//     const sessionId = req.session.userId;
 
-    //create a session id and save it in local storage
-    // const sessionId = new ObjectId().toString();
-    // localStorage.setItem('sessionId', sessionId);
-    //store in cookie
-    // res.cookie('sessionId', sessionId,{
-    //     secure: true, // Set to true if using HTTPS
-    //     httpOnly: true,
-    //     sameSite: 'strict', // Adjust based on your requirements
-    //     maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
-    //   });
+//     //create a session id and save it in local storage
+//     // const sessionId = new ObjectId().toString();
+//     // localStorage.setItem('sessionId', sessionId);
+//     //store in cookie
+//     // res.cookie('sessionId', sessionId,{
+//     //     secure: true, // Set to true if using HTTPS
+//     //     httpOnly: true,
+//     //     sameSite: 'strict', // Adjust based on your requirements
+//     //     maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
+//     //   });
 
-    // console.log(req.session.tempUserId)
+//     // console.log(req.session.tempUserId)
 
-    res.status(200).json({
-        message: 'Welcome to the landing page!',
-        sessionId: sessionId});
-});
+//     res.status(200).json({
+//         message: 'Welcome to the landing page!',
+//         sessionId: sessionId});
+// });
 
 
 app.use('/users', userRouter);
