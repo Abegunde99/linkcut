@@ -219,7 +219,7 @@ exports.generateUrl = asyncHandler(async (req, res, next) => {
     }
 
     //assign a temporary user id
-    req.body.user = new ObjectId().toString();
+    // req.body.user = new ObjectId().toString();
 
     //create url
     const newUrl = await UrlModel.create({
@@ -245,16 +245,30 @@ exports.generateUrl = asyncHandler(async (req, res, next) => {
 //@desc get a url for an unregeistered user
 //@route    GET /url/:userId
 //@access   Public
-exports.getUrlForUnregisteredUser = asyncHandler(async (req, res, next) => { 
-    const { userId } = req.params;
+// exports.getUrlForUnregisteredUser = asyncHandler(async (req, res, next) => { 
+//     const { userId } = req.params;
 
-    const url = await UrlModel.findOne({ user: userId });
-    if (!url) {
-        return next(new ErrorResponse('Url does not exist', 400));
-    }
+//     const url = await UrlModel.findOne({ user: userId });
+//     if (!url) {
+//         return next(new ErrorResponse('Url does not exist', 400));
+//     }
+
+//     res.status(200).json({
+//         success: true,
+//         url,
+//     });
+// });
+
+//@desc     Get all urls for an unregeistered user
+//@route    GET /url/unregistered
+//@access   Public
+exports.getUrlsForUnregisteredUser = asyncHandler(async (req, res, next) => { 
+    const userId = new ObjectId().toString();
+    const urls = await UrlModel.find({ user: userId });
 
     res.status(200).json({
         success: true,
-        url,
+        urls,
+        userId,
     });
 });
