@@ -26,7 +26,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 // console.log(req.session.userId)
   if (!req.session.userId) {
     // Generate a temporary user ID using shortid package
-    req.session.userId = new ObjectId().toString();
+    req.session.userId = 'TEMP-' + new Date().getTime().toString();
   }
   const sessionId = req.session.userId;
   // Create user
