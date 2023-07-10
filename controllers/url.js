@@ -21,12 +21,6 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Invalid url', 400));
     }
 
-    //check for existing url
-    const urlExists = await UrlModel.findOne({ url });
-    if (urlExists) {
-        return next(new ErrorResponse('Url already exists', 400));
-    }
-
     //check for urlCode and add default value if not present
     if (!req.body.slug) { 
         req.body.slug = nanoid(5);
@@ -195,12 +189,7 @@ exports.generateUrl = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Invalid url', 400));
     }
 
-    //check for existing url
-    const urlExists = await UrlModel.findOne({ url });
-    if (urlExists) {
-        return next(new ErrorResponse('Url already exists', 400));
-    }
-
+   
     //check for urlCode and add default value if not present
     if (!req.body.slug) { 
         req.body.slug = nanoid(5);
@@ -218,9 +207,7 @@ exports.generateUrl = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Error generating qrCode', 500));
     }
 
-    //assign a temporary user id
-    // req.body.user = new ObjectId().toString();
-
+  
     //create url
     const newUrl = await UrlModel.create({
         url,
