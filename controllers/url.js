@@ -65,6 +65,7 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         newUrl,
+        sessionId,
     });
 
 });
