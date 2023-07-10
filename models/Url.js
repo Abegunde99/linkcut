@@ -4,7 +4,6 @@ const UrlSchema = new mongoose.Schema({
     url: {
         type: String,
         required: [true, 'Please enter your url'],
-        unique: true,
         match: [
             /^(ftp|http|https):\/\/[^ "]+$/,
             'Please add a valid url'
