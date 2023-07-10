@@ -16,7 +16,9 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     const baseUrl = process.env.BASE_URL;
     let urlCode;
 
-    const sessionId = req.cookies.sessionId;
+    // const sessionId = req.cookies.sessionId;
+    const sessionId = req.session.userId;
+    // console.log(sessionId)
     
     //check if url is valid
     if (!validUrl.isUri(url)) { 

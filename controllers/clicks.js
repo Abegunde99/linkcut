@@ -79,7 +79,7 @@ const clickUrl = asyncHandler(async (req, res, next) => {
 const getUserClicks = asyncHandler(async (req, res, next) => { 
     const clicks = await ClicksModel.find({}).populate('urlId');
 
-    const sessionId = req.cookies.sessionId;
+    const sessionId = req.session.userId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 9;
     // get clicks where req.user._id is equal to clicks.urlId.user

@@ -26,11 +26,11 @@ app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        secure: true, // Set to true if using HTTPS
-        httpOnly: true,
-        sameSite: 'strict' // Adjust based on your requirements
-      }
+    // cookie: {
+    //     secure: true, // Set to true if using HTTPS
+    //     httpOnly: true,
+    //     sameSite: 'strict' // Adjust based on your requirements
+    //   }
 }));
   
 
@@ -61,21 +61,21 @@ app.use(cors());
 //routes
 app.get('/', (req, res) => {
     // Check if a temporary user ID is already stored in the session
-    // if (!req.session.tempUserId) {
-    //     // Generate a temporary user ID using shortid package
-    //     req.session.tempUserId = new ObjectId().toString();
-    // }
+    if (!req.session.userId) {
+        // Generate a temporary user ID using shortid package
+        req.session.userId = new ObjectId().toString();
+    }
 
     //create a session id and save it in local storage
-    const sessionId = new ObjectId().toString();
+    // const sessionId = new ObjectId().toString();
     // localStorage.setItem('sessionId', sessionId);
     //store in cookie
-    res.cookie('sessionId', sessionId,{
-        secure: true, // Set to true if using HTTPS
-        httpOnly: true,
-        sameSite: 'strict', // Adjust based on your requirements
-        maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
-      });
+    // res.cookie('sessionId', sessionId,{
+    //     secure: true, // Set to true if using HTTPS
+    //     httpOnly: true,
+    //     sameSite: 'strict', // Adjust based on your requirements
+    //     maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
+    //   });
 
     // console.log(req.session.tempUserId)
 
