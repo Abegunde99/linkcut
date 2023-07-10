@@ -262,8 +262,11 @@ exports.generateUrl = asyncHandler(async (req, res, next) => {
 //@desc     Get all urls for an unregeistered user
 //@route    GET /url/unregistered
 //@access   Public
-exports.getUrlsForUnregisteredUser = asyncHandler(async (req, res, next) => { 
-    const userId = new ObjectId().toString();
+exports.getUrlsForUnregisteredUser = asyncHandler(async (req, res, next) => {
+    if (!req.session.userId){
+        req.session.userId = new ObjectId().toString();
+    }
+    const userId = req.session.userId;
     const urls = await UrlModel.find({ user: userId });
 
     res.status(200).json({

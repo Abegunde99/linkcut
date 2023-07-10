@@ -22,16 +22,16 @@ const urlRouter = require('./routes/url');
 const app = express();
 
 // Initialize session middleware
-// app.use(session({
-//     secret: 'your-secret-key',
-//     resave: false,
-//     saveUninitialized: false,
-//     // cookie: {
-//     //     secure: true, // Set to true if using HTTPS
-//     //     httpOnly: true,
-//     //     sameSite: 'strict' // Adjust based on your requirements
-//     //   }
-// }));
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    // cookie: {
+    //     secure: true, // Set to true if using HTTPS
+    //     httpOnly: true,
+    //     sameSite: 'strict' // Adjust based on your requirements
+    //   }
+}));
   
 
 // Body parser
