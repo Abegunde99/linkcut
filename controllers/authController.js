@@ -17,8 +17,10 @@ exports.register = asyncHandler(async (req, res, next) => {
   if (!sessionId) { 
     sessionId = new ObjectId().toString();
     res.cookie('sessionId', sessionId, {
-      expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-      httpOnly: true
+      secure: true, // Set to true if using HTTPS
+      httpOnly: true,
+      sameSite: 'strict', // Adjust based on your requirements
+      maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
     });
   }
 

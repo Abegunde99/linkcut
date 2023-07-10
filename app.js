@@ -70,9 +70,11 @@ app.get('/', (req, res) => {
     const sessionId = new ObjectId().toString();
     // localStorage.setItem('sessionId', sessionId);
     //store in cookie
-    res.cookie('sessionId', sessionId, {
-        expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-        httpOnly: true
+    res.cookie('sessionId', sessionId,{
+        secure: true, // Set to true if using HTTPS
+        httpOnly: true,
+        sameSite: 'strict', // Adjust based on your requirements
+        maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (e.g., 1 day)
       });
 
     // console.log(req.session.tempUserId)
