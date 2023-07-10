@@ -61,10 +61,21 @@ app.use(cors());
 //routes
 app.get('/', (req, res) => {
     // Check if a temporary user ID is already stored in the session
-    if (!req.session.tempUserId) {
-        // Generate a temporary user ID using shortid package
-        req.session.tempUserId = new ObjectId().toString();
-    }
+    // if (!req.session.tempUserId) {
+    //     // Generate a temporary user ID using shortid package
+    //     req.session.tempUserId = new ObjectId().toString();
+    // }
+
+    //create a session id and save it in local storage
+    const sessionId = new ObjectId().toString();
+    // localStorage.setItem('sessionId', sessionId);
+    //store in cookie
+    res.cookie('sessionId', sessionId, {
+        expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+        httpOnly: true
+      });
+
+    // console.log(req.session.tempUserId)
 
     res.status(200).json({
        message : 'Welcome to the landing page!'});

@@ -16,12 +16,8 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
     const baseUrl = process.env.BASE_URL;
     let urlCode;
 
-    if (!req.session.tempUserId) {
-        // Generate a temporary user ID using shortid package
-        req.session.tempUserId = new ObjectId().toString();
-    }
+    const sessionId = req.cookies.sessionId;
     
-
     //check if url is valid
     if (!validUrl.isUri(url)) { 
         return next(new ErrorResponse('Invalid url', 400));
@@ -56,7 +52,7 @@ exports.createUrl = asyncHandler(async (req, res, next) => {
         slug: req.body.slug,
         urlCode,
         qrCode,
-        user: req.session.tempUserId,
+        user: sessionId,
     });
 
     //create clicks

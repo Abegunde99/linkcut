@@ -79,20 +79,22 @@ const clickUrl = asyncHandler(async (req, res, next) => {
 const getUserClicks = asyncHandler(async (req, res, next) => { 
     const clicks = await ClicksModel.find({}).populate('urlId');
 
+    const sessionId = req.cookies.sessionId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 9;
     // get clicks where req.user._id is equal to clicks.urlId.user
     const userClick = [];
+    // console.log(req.session.tempUserId)
     if (!req.user) {
         for (let i = 0; i < clicks.length; i++) {
-            if (clicks[i].urlId.user == req.session.tempUserId) {
+            if (clicks[i].urlId.user == sessionId) {
                 userClick.push(clicks[i]);
             }
         }
     } else {
-        
+        // console.log(req.user.sessionId)
         for (let i = 0; i < clicks.length; i++) {
-            if (clicks[i].urlId.user == req.user.sessionId) {
+            if (clicks[i].urlId.user == req.user.sessionId ) {
                 userClick.push(clicks[i]);
             }
         }

@@ -12,12 +12,15 @@ const { ObjectId } = mongoose.Types;
 exports.register = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
-  if (!req.session.tempUserId) {
-    // Generate a temporary user ID using shortid package
-    req.session.tempUserId = new ObjectId().toString();
+  
+  let sessionId = req.cookies.sessionId;
+  if (!sessionId) { 
+    sessionId = new ObjectId().toString();
+    res.cookie('sessionId', sessionId, {
+      expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+      httpOnly: true
+    });
   }
-
-  const sessionId = req.session.tempUserId;
 
   // Create user
   const user = await UserModel.create({ firstName, lastName, email, password, sessionId });
