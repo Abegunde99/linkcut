@@ -65,6 +65,7 @@ app.get('/', (req, res) => {
         // Generate a temporary user ID using shortid package
         req.session.userId = new ObjectId().toString();
     }
+    const sessionId = req.session.userId;
 
     //create a session id and save it in local storage
     // const sessionId = new ObjectId().toString();
@@ -80,7 +81,8 @@ app.get('/', (req, res) => {
     // console.log(req.session.tempUserId)
 
     res.status(200).json({
-       message : 'Welcome to the landing page!'});
+        message: 'Welcome to the landing page!',
+        sessionId: sessionId});
 });
 
 
